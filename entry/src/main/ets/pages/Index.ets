@@ -1,7 +1,7 @@
-import {Test} from './Test'
-import {ColorConstants} from '../common/constants/ColorConstants'
+import {ColorConstants} from '../common/enums/ColorEnum'
 import { HomePage } from './HomePage';
 import { ProfilePage } from './ProfilePage';
+import { MqttTestPage } from '../test/MqttTestPage';
 
 @Entry
 @Component
@@ -12,9 +12,9 @@ struct Index {
     Navigation(this.pageStack) {
       Column() {
         Tabs({ index: this.currentTab }) {
-          TabContent() {HomePage();}
+          TabContent() {MqttTestPage();}
           .tabBar(this.createTabItem(0, "家居", $r("app.media.icon_tab_home")))
-          TabContent() {Test();}
+          TabContent() {HomePage();}
           .tabBar(this.createTabItem(1, "AI", $r("app.media.icon_tab_ai")))
           TabContent() {ProfilePage();}
           .tabBar(this.createTabItem(2, "我的", $r("app.media.icon_tab_profile")))
@@ -38,7 +38,6 @@ struct Index {
     .height('100%')
     .backgroundColor(ColorConstants.NAVIGATION_BG_COLOR)
   }
-  @State animColor: string = '#9E9E9E';  // 初始未选中颜色
 
   @Builder
   createTabItem(index: number, title: string, icon: Resource) {

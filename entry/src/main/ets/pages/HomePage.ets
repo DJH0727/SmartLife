@@ -1,4 +1,4 @@
-import { ColorConstants } from "../common/constants/ColorConstants"
+import { ColorConstants } from "../common/enums/ColorEnum"
 import { UserName } from "../common/constants/CommonConstants"
 @Component
 export struct HomePage {

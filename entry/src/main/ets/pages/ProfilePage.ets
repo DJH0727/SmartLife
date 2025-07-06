@@ -27,13 +27,11 @@ export struct ProfilePage {
       .backgroundImageSize({ height: '100%', width: '100%' })
       .backgroundBlurStyle(BlurStyle.Regular)
       Column({ space: 10 }) {
-        this.mineItemBuilder($r('app.media.icon_mine_info'), '我的信息', () =>
-        {
+        this.mineItemBuilder($r('app.media.icon_mine_info'), '我的信息', () => {
           promptAction.showToast({ message: '没有信息' })
         })
         Divider()
-        this.mineItemBuilder($r('app.media.ic_mine_update'), '检查更新', () =>
-        {
+        this.mineItemBuilder($r('app.media.ic_mine_update'), '检查更新', () => {
           promptAction.showToast({ message: '已是最新' })
         })
         Divider()
