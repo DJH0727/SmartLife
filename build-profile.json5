@@ -1,0 +1,56 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\27249\\.ohos\\config\\default_SmartLife_oaq-iNaLpV3JKUGZZS2xZ0uFQowT6otO3Adr70LEXL0=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BCC25C026EC95F773D1D6D4627FB418ED870CDA5B1EE6ED4FCDE371FA9AB338B6C89C62BB2F576B",
+          "profile": "C:\\Users\\27249\\.ohos\\config\\default_SmartLife_oaq-iNaLpV3JKUGZZS2xZ0uFQowT6otO3Adr70LEXL0=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\27249\\.ohos\\config\\default_SmartLife_oaq-iNaLpV3JKUGZZS2xZ0uFQowT6otO3Adr70LEXL0=.p12",
+          "storePassword": "0000001BFD0DF1BF9183A88F1AFBAF5A71BBE382E87855796A081400F5F0382C89FF4BB76AAA9683B1F2D0"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "targetSdkVersion": "5.0.5(17)",
+        "compatibleSdkVersion": "5.0.1(13)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
