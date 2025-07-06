@@ -1,0 +1,1 @@
+export const UserName:string = "春困夏乏秋倦冬眠"

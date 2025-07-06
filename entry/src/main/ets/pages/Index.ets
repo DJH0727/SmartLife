@@ -1,5 +1,8 @@
 import {Test} from './Test'
 import {ColorConstants} from '../common/constants/ColorConstants'
+import { HomePage } from './HomePage';
+import { ProfilePage } from './ProfilePage';
+
 @Entry
 @Component
 struct Index {
@@ -9,17 +12,12 @@ struct Index {
     Navigation(this.pageStack) {
       Column() {
         Tabs({ index: this.currentTab }) {
-          TabContent() {
-            Test();
-          }.tabBar(this.createTabItem(0, "家居", $r("app.media.icon_tab_home")))
-
-          TabContent() {
-            Test();
-          }.tabBar(this.createTabItem(1, "AI", $r("app.media.icon_tab_ai")))
-
-          TabContent() {
-            Test();
-          }.tabBar(this.createTabItem(2, "我的", $r("app.media.icon_tab_profile")))
+          TabContent() {HomePage();}
+          .tabBar(this.createTabItem(0, "家居", $r("app.media.icon_tab_home")))
+          TabContent() {Test();}
+          .tabBar(this.createTabItem(1, "AI", $r("app.media.icon_tab_ai")))
+          TabContent() {ProfilePage();}
+          .tabBar(this.createTabItem(2, "我的", $r("app.media.icon_tab_profile")))
         }
         .barPosition(BarPosition.End)
         .scrollable(false)
@@ -30,7 +28,7 @@ struct Index {
       }
       .width('100%')
       .height('100%')
-      .backgroundColor(Color.White)
+      .backgroundColor(ColorConstants.TABS_BG_COLOR)
     }
     .mode(NavigationMode.Stack)
     .hideToolBar(true)
@@ -38,7 +36,7 @@ struct Index {
     .hideBackButton(true)
     .width('100%')
     .height('100%')
-    .backgroundColor(ColorConstants.NAVIGATION_COLOR)
+    .backgroundColor(ColorConstants.NAVIGATION_BG_COLOR)
   }
   @State animColor: string = '#9E9E9E';  // 初始未选中颜色
 
