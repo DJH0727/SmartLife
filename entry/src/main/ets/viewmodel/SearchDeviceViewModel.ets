@@ -107,6 +107,9 @@ export class SearchDeviceViewModel {
     }
     this.refreshing = false;
     this.isTimeOut = false;
+    this.MqttUtil.unsubscribe("/devices/unbound/response",0)
+    this.dispatcher.unregisterHandler('/devices/unbound/response')
+    this.isSearching = false;
   }
 
 

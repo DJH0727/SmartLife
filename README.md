@@ -164,3 +164,34 @@ this.pageStack.getParamByName("PageOne")
 当前支持的生命周期函数：
 aboutToAppear、onReady、onAppear、onShow、onHide、onDisappear、aboutToDisappear 、onWillAppear、onWillDisappear
 ![img.png](readmefile/nav_life.png)
+
+
+## emitter 常用示例
+导入模块
+```ts
+import { emitter } from '@kit.BasicServicesKit';
+```
+
+持续订阅事件
+```ts
+emitter.on('my_event', (eventData) => {
+console.info(收到事件数据: ${JSON.stringify(eventData?.data)});
+});
+```
+发送事件
+```ts
+emitter.emit('my_event', { data: { message: 'Hello World' } });
+```
+
+取消订阅
+```ts
+emitter.off('my_event');
+```
+ 
+用途示例：
+
+页面 A 订阅 device_added 事件；
+
+页面 B 通过 emitter.emit('device_added') 发送事件；
+
+页面 A 接收到事件后自动更新设备列表。

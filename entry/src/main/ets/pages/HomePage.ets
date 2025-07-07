@@ -1,22 +1,32 @@
 import { ColorConstants } from "../common/enums/ColorEnum"
-import { UserName } from "../common/constants/CommonConstants"
+import { DEVICE_UPDATE_EVENT, UserName } from "../common/constants/CommonConstants"
 import { DeviceBase } from "../model/device/DeviceBase"
 import { DeviceCard } from "../view/DeviceCard"
+
 import { DeviceEnum } from "../common/enums/DeviceEnum";
 import { AirConditionerDevice } from "../model/device/AirConditionerDevice";
-import { BoundDevices } from "../model/BoundDevices"
 import { DeviceDataSource } from "../model/DeviceDataSource";
 import { HomePageViewModel } from "../viewmodel/HomePageViewModel";
+import { emitter } from "@kit.BasicServicesKit";
 
 @Component
 export struct HomePage {
   @Consume('NavPathStack') pageStack: NavPathStack;
-  @State viewModel: HomePageViewModel = new HomePageViewModel();
+  @State viewModel: HomePageViewModel = HomePageViewModel.getInstance()
+  @State deviceCount: number = 0;
   aboutToAppear(): void {
     let context = this.getUIContext().getHostContext() as Context;
     this.viewModel.initPreferences(context).then(() => {
-      this.viewModel.loadDevices();
+      this.viewModel.loadDevices().then(() => {
+        this.deviceCount = this.viewModel.deviceCount;
+      });
+
     });
+    emitter.on(DEVICE_UPDATE_EVENT, () => {
+      console.info('设备更新事件触发')
+        this.deviceCount = this.viewModel.deviceCount;
+      }
+    );
   }
 
   build() {
@@ -43,7 +53,7 @@ export struct HomePage {
           .fontWeight(FontWeight.Bold)
           .fontColor('#000000')
 
-        Text(this.viewModel.deviceCount+" 个设备")
+        Text(this.deviceCount+" 个设备")
           .fontSize(14)
           .fontColor('#666666')
       }

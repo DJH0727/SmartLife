@@ -1,6 +1,7 @@
 import promptAction from '@ohos.promptAction';
 import { DeviceBase } from '../model/device/DeviceBase';
 import { ColorConstants } from '../common/enums/ColorEnum';
+import { HomePageViewModel } from '../viewmodel/HomePageViewModel';
 
 @Preview
 @Component
@@ -50,6 +51,8 @@ export struct UnboundDeviceCard {
       .borderRadius(18)
       .onClick(() => {
         console.info('绑定设备：' + this.device.getName());
+        const  viewModel: HomePageViewModel = HomePageViewModel.getInstance()
+        viewModel.addDeviceTest();
       });
     }
     .width('100%')
