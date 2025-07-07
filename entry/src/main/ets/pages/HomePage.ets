@@ -4,22 +4,25 @@ import { DeviceBase } from "../model/device/DeviceBase"
 import { DeviceCard } from "../view/DeviceCard"
 import { DeviceEnum } from "../common/enums/DeviceEnum";
 import { AirConditionerDevice } from "../model/device/AirConditionerDevice";
+import { BoundDevices } from "../model/BoundDevices"
 import { DeviceDataSource } from "../model/DeviceDataSource";
 import { HomePageViewModel } from "../viewmodel/HomePageViewModel";
 
 @Component
 export struct HomePage {
   @Consume('NavPathStack') pageStack: NavPathStack;
-  private viewModel: HomePageViewModel = new HomePageViewModel();
+  @State viewModel: HomePageViewModel = new HomePageViewModel();
   aboutToAppear(): void {
-
+    let context = this.getUIContext().getHostContext() as Context;
+    this.viewModel.initPreferences(context).then(() => {
+      this.viewModel.loadDevices();
+    });
   }
 
   build() {
     Column() {
-      this.CustomTitleBar(UserName+" 的家",this.viewModel.devicesDS.totalCount()+" 个设备")
+      this.CustomTitleBar()
       this.DeviceGrid()
-
     }
     .width('100%')
     .height('100%')
@@ -31,16 +34,16 @@ export struct HomePage {
 
 
   @Builder
-  CustomTitleBar(content: string,subtitle: string) {
+  CustomTitleBar() {
     Row() {
       // 左侧主副标题
       Column() {
-        Text(content)
+        Text(UserName+" 的家")
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .fontColor('#000000')
 
-        Text(subtitle)
+        Text(this.viewModel.deviceCount+" 个设备")
           .fontSize(14)
           .fontColor('#666666')
       }
@@ -75,6 +78,11 @@ export struct HomePage {
         .onClick(() => {
           this.pageStack.pushPathByName('SearchDevicePage', '');
           console.log("添加设备")
+        })
+      MenuItem({ content: " Test" })
+        .onClick(() => {
+          this.viewModel.addDeviceTest();
+
         })
     }
   }

@@ -1,13 +1,13 @@
 import { DeviceEnum } from "../../common/enums/DeviceEnum";
 
 export class DeviceBase {
-  private id: string;
-  private type: DeviceEnum;
-  private name: string;
-  private bindCode: string;
-  private online: boolean;
-  private isPowerOn: boolean;          // 开关状态
-  private lastUpdate: number;
+   id: string;
+   type: DeviceEnum;
+   name: string;
+   bindCode: string;
+   online: boolean;
+   isPowerOn: boolean;          // 开关状态
+   lastUpdate: number;
 
   constructor(id: string, type: DeviceEnum, name: string, bindCode: string='', isPowerOn = false, online = false, lastUpdate = 0) {
     this.id = id;

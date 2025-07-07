@@ -14,6 +14,9 @@ export class DeviceDataSource implements IDataSource {
   getData(index: number): DeviceBase {
     return this.devices[index];
   }
+  getAllData(): DeviceBase[] {
+    return this.devices;
+  }
 
   registerDataChangeListener(listener: DataChangeListener): void {
     if (!this.listeners.includes(listener)) {
@@ -61,6 +64,18 @@ export class DeviceDataSource implements IDataSource {
     });
   }
 
+  addDevices(devices: DeviceBase[]): void {
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      const exists = this.devices.some(d => d.getId() === device.getId());
+      if (exists) {
+        console.info(`设备 ${device.getId()} 已存在，跳过添加`);
+        continue;  // 这里可以正常用
+      }
+      this.devices.push(device);
+    }
+    this.notifyDataReload();
+  }
   addDevice(device: DeviceBase): void {
     const exists = this.devices.some(d => d.getId() === device.getId());
     if (exists) {

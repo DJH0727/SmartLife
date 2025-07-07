@@ -14,10 +14,10 @@ export enum Mode {
   DRY = 2,
 }
 export class AirConditionerDevice extends DeviceBase {
-  private currentTemperature: number; // 当前温度
-  private targetTemperature: number;  // 目标温度
-  private fanSpeed: FanSpeed;         // 风速
-  private mode: Mode;               // 模式
+   currentTemperature: number; // 当前温度
+   targetTemperature: number;  // 目标温度
+   fanSpeed: FanSpeed;         // 风速
+   mode: Mode;               // 模式
 
   constructor(
     id: string,
