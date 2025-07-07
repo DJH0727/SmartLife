@@ -9,7 +9,7 @@ export struct ProfilePage {
   build() {
     Stack() {
       Column() {
-        Image($r('app.media.img_avatar_mine'))
+        Image($r('app.media.img_profile_ikun'))
           .width(100)
           .height(100)
           .borderRadius(50)
