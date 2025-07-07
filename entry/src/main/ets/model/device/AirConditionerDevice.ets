@@ -3,20 +3,19 @@ import { DeviceEnum } from '../../common/enums/DeviceEnum';
 
 
 export enum FanSpeed {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
+  LOW =0,
+  MEDIUM = 1,
+  HIGH = 2,
 }
 
 export enum Mode {
-  COOL = 'cool',
-  HEAT = 'heat',
-  DRY = 'dry',
+  COOL = 0,
+  HEAT = 1,
+  DRY = 2,
 }
 export class AirConditionerDevice extends DeviceBase {
   private currentTemperature: number; // 当前温度
   private targetTemperature: number;  // 目标温度
-  private isPowerOn: boolean;          // 开关状态
   private fanSpeed: FanSpeed;         // 风速
   private mode: Mode;               // 模式
 
@@ -24,18 +23,17 @@ export class AirConditionerDevice extends DeviceBase {
     id: string,
     name: string,
     bindCode: string,
+    isPowerOn = false,
     currentTemperature = 25,
     targetTemperature = 26,
-    isPowerOn = false,
     fanSpeed = FanSpeed.MEDIUM,
     mode = Mode.COOL,
     online = false,
     lastUpdate = 0
   ) {
-    super(id, DeviceEnum.AIR_CONDITIONER, name, bindCode, online, lastUpdate);
+    super(id, DeviceEnum.AIR_CONDITIONER, name, bindCode,isPowerOn, online, lastUpdate);
     this.currentTemperature = currentTemperature;
     this.targetTemperature = targetTemperature;
-    this.isPowerOn = isPowerOn;
     this.fanSpeed = fanSpeed;
     this.mode = mode;
   }
@@ -46,7 +44,7 @@ export class AirConditionerDevice extends DeviceBase {
 
   setCurrentTemperature(temp: number): void {
     this.currentTemperature = temp;
-    this.lastUpdate = Date.now();
+    this.setLastUpdate(Date.now());
   }
 
   getTargetTemperature(): number {
@@ -55,24 +53,16 @@ export class AirConditionerDevice extends DeviceBase {
 
   setTargetTemperature(temp: number): void {
     this.targetTemperature = temp;
-    this.lastUpdate = Date.now();
+    this.setLastUpdate(Date.now());
   }
 
-  getPowerStatus(): boolean {
-    return this.isPowerOn;
-  }
-
-  setPowerStatus(on: boolean): void {
-    this.isPowerOn = on;
-    this.lastUpdate = Date.now();
-  }
-  getMode(): string {
+  getMode(): number {
     return this.mode;
   }
   setMode(mode: Mode): void {
     this.mode = mode;
   }
-  getFanSpeed(): string {
+  getFanSpeed(): number {
     return this.fanSpeed;
   }
   setFanSpeed(speed: FanSpeed): void {

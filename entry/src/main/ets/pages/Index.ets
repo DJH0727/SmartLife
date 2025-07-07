@@ -2,7 +2,7 @@ import {ColorConstants} from '../common/enums/ColorEnum'
 import { HomePage } from './HomePage';
 import { ProfilePage } from './ProfilePage';
 import { MqttTestPage } from '../test/MqttTestPage';
-
+import { DeviceCardTestPage } from '../test/DeviceCardTestPage';
 @Entry
 @Component
 struct Index {
@@ -12,9 +12,9 @@ struct Index {
     Navigation(this.pageStack) {
       Column() {
         Tabs({ index: this.currentTab }) {
-          TabContent() {MqttTestPage();}
-          .tabBar(this.createTabItem(0, "家居", $r("app.media.icon_tab_home")))
           TabContent() {HomePage();}
+          .tabBar(this.createTabItem(0, "家居", $r("app.media.icon_tab_home")))
+          TabContent() {DeviceCardTestPage();}
           .tabBar(this.createTabItem(1, "AI", $r("app.media.icon_tab_ai")))
           TabContent() {ProfilePage();}
           .tabBar(this.createTabItem(2, "我的", $r("app.media.icon_tab_profile")))
