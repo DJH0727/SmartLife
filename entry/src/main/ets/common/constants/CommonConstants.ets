@@ -1,4 +1,4 @@
-export const UserName:string = "春困夏乏秋倦冬眠"
+export const UserName:string = "IKUN"
 
 const HOST_IP = '192.168.1.100'
 
