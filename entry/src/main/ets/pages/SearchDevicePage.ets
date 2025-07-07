@@ -19,6 +19,7 @@ struct SearchDevicePage {
   @State refreshState: RefreshStatus = RefreshStatus.Inactive;
 
 
+
   aboutToAppear(): void {
     this.viewModel.startSearchDevices();
   }
@@ -30,7 +31,7 @@ struct SearchDevicePage {
 
   build() {
     NavDestination(){
-      this.SearchPageTitleBar("搜索设备")
+      this.SearchPageTitleBar("添加设备")
       Divider().height(2).color(0xCCCCCC)
 
       Refresh({ refreshing: $$this.viewModel.refreshing, builder: this.refreshBuilder() }) {
@@ -62,6 +63,7 @@ struct SearchDevicePage {
     .height("100%")
     .hideTitleBar(true)
     .backgroundColor(ColorConstants.SEARCH_PAGE_BG_COLOR)
+
 
 
   }

@@ -11,6 +11,35 @@
 
 ```
 
+### 使用 MqttMessageDispatcher 实现 MQTT 消息分发
+
+封装 `MqttMessageDispatcher` 单例，用来集中管理 MQTT 消息的分发，让不同主题的消息可以被独立处理。
+
+---
+
+## ✨ 1. 设计目的
+
+- 将所有 MQTT 消息的回调集中到一个分发器中
+- 避免 if-else 或 switch 判断主题
+- 各模块只需要注册关心的主题和处理逻辑
+- 实现清晰、模块化的消息处理
+
+---
+
+### 注册处理器
+
+在需要处理 MQTT 消息的模块（如 ViewModel）中，调用一次 `registerHandler()`，并提供对应主题的处理函数：
+
+```ts
+import { MqttMessageDispatcher } from './MqttMessageDispatcher';
+
+MqttMessageDispatcher.getInstance().registerHandler('/devices/unbound/response', (payload) => {
+  const deviceInfo = JSON.parse(payload) as UnboundDevicePayload;
+  console.info('接收到未绑定设备:', deviceInfo);
+  // 在这里更新你的数据源、刷新界面等
+});
+```
+
 ## LazyForEach
 
 ### 1. 数据源要求

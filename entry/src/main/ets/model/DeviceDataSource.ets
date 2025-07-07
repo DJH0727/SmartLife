@@ -55,8 +55,18 @@ export class DeviceDataSource implements IDataSource {
     this.devices.splice(to, 0, item);
     this.notifyDataMove(from, to);
   }
+  notifyDatasetChange(operations: DataOperation[]): void {
+    this.listeners.forEach(listener => {
+      listener.onDatasetChange(operations);
+    });
+  }
 
   addDevice(device: DeviceBase): void {
+    const exists = this.devices.some(d => d.getId() === device.getId());
+    if (exists) {
+      console.info(`设备 ${device.getId()} 已存在，跳过添加`);
+      return;
+    }
     this.devices.push(device);
     this.notifyDataAdd(this.devices.length - 1);
   }

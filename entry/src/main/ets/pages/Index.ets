@@ -3,14 +3,22 @@ import { HomePage } from './HomePage';
 import { ProfilePage } from './ProfilePage';
 import { MqttTestPage } from '../test/MqttTestPage';
 import { DeviceCardTestPage } from '../test/DeviceCardTestPage';
+import MQTTUtil, { MQTTConnectOptions, MQTTSubscription } from '../common/utils/MQTTUtil';
+import { MQTT_URL } from '../common/constants/CommonConstants';
+import { MqttMessageDispatcher } from '../common/utils/MqttMessageDispatcher';
+
 @Entry
 @Component
 struct Index {
 
   @Provide('NavPathStack') pageStack: NavPathStack = new NavPathStack()
+  @Provide('MQTTUtil') MqttUtil:MQTTUtil=MQTTUtil.getInstance();
   @State currentTab: number = 0;
+  private dispatcher:MqttMessageDispatcher = MqttMessageDispatcher.getInstance();
+
   aboutToAppear(): void {
-    //this.pageStack.pushPathByName('SearchDevicePage', '');
+    this.connect_mqtt();
+    this.pageStack.pushPathByName('SearchDevicePage', '');
   }
 
 
@@ -61,6 +69,34 @@ struct Index {
     }
     .alignItems(HorizontalAlign.Center)
     .margin({ top: 4, bottom: 4 })
+  }
+
+
+  private async connect_mqtt() {
+    const options: MQTTConnectOptions = {
+      url: MQTT_URL,
+      clientId: 'harmony_app_client',
+      username: 'harmonyos',
+      password: 'password',
+      connectTimeout: 300,
+    };
+    const subscriptions: MQTTSubscription[] = [];
+    await this.MqttUtil.connect(
+      options,
+      subscriptions,
+      (err, message) => {
+        if (err) {
+          console.error('MQTT接收消息出错:', err);
+          return;
+        }
+        const payloadStr = message.payload;
+        const topic = message.topic;
+        this.dispatcher.dispatch(topic, payloadStr);
+        console.log(`收到消息 - 主题: ${topic}, 内容: ${payloadStr}`);
+
+      }
+    );
+
   }
 
 }

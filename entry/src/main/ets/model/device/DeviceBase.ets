@@ -9,7 +9,7 @@ export class DeviceBase {
   private isPowerOn: boolean;          // 开关状态
   private lastUpdate: number;
 
-  constructor(id: string, type: DeviceEnum, name: string, bindCode: string, isPowerOn = false, online = false, lastUpdate = 0) {
+  constructor(id: string, type: DeviceEnum, name: string, bindCode: string='', isPowerOn = false, online = false, lastUpdate = 0) {
     this.id = id;
     this.type = type;
     this.name = name;

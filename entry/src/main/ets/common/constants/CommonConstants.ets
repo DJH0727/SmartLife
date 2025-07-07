@@ -1,6 +1,6 @@
 export const UserName:string = "IKUN"
 
-const HOST_IP = '192.168.1.100'
+const HOST_IP = '192.168.43.143'
 
 //MQTT
 export const MQTT_URL = `${HOST_IP}:1883`

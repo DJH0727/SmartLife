@@ -102,6 +102,18 @@ export default class MQTTUtil {
   }
 
   /**
+   * 动态取消订阅主题
+   */
+  async unsubscribe(topic: string, qos: MqttQos = 0): Promise<void> {
+    if (!this.mqttAsyncClient) {
+      console.error('MQTT客户端未连接');
+      return;
+    }
+    await this.mqttAsyncClient.unsubscribe({ topic, qos });
+    console.log(`已动态取消订阅主题: ${topic}`);
+  }
+
+  /**
    * 断开连接
    */
   async disconnect(): Promise<void> {

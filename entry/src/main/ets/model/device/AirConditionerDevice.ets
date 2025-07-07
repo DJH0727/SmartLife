@@ -22,7 +22,7 @@ export class AirConditionerDevice extends DeviceBase {
   constructor(
     id: string,
     name: string,
-    bindCode: string,
+    bindCode: string='',
     isPowerOn = false,
     currentTemperature = 25,
     targetTemperature = 26,

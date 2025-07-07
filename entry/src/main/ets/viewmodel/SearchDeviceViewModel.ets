@@ -1,13 +1,26 @@
-import { DeviceEnum } from "../common/enums/DeviceEnum";
+import { DeviceEnum, getDeviceType } from "../common/enums/DeviceEnum";
+import { MqttMessageDispatcher } from "../common/utils/MqttMessageDispatcher";
+import MQTTUtil from "../common/utils/MQTTUtil";
 import { DeviceBase } from "../model/device/DeviceBase";
 import { DeviceDataSource } from "../model/DeviceDataSource";
 
+interface UnboundDevicePayload {
+  id: string;
+  type: string;
+  name: string;
+  bindCode?: string;
+  isPowerOn?: boolean;
+  lastUpdate?: number;
+}
+
 export class SearchDeviceViewModel {
+  MqttUtil:MQTTUtil=MQTTUtil.getInstance();
   unboundDevicesDS: DeviceDataSource;
   refreshing: boolean = false;
   private searchTimer?: number;
   private timeoutTimer?: number;
   private isTimeOut: boolean = false;
+  private dispatcher:MqttMessageDispatcher = MqttMessageDispatcher.getInstance();
 
   constructor() {
     this.unboundDevicesDS = new DeviceDataSource([]);
@@ -32,31 +45,51 @@ export class SearchDeviceViewModel {
     ];
     this.unboundDevicesDS = new DeviceDataSource(initialDevices);
   }
-
+  /*
+   * {"id": "dev101","type": "air_conditioner","name": "Gree Air Conditioner"}
+   * {"id": "dev102","type": "humidifier","name": "Gree Humidifier"}
+   * {"id": "dev103","type": "gas_detector","name": "Gree Gas Detector"}
+   */
   startSearchDevices() {
     console.info("开始搜索设备...");
 
-    const simulatedDevices = [
-      new DeviceBase("dev100", DeviceEnum.AIR_CONDITIONER, "客厅空调", ""),
-      new DeviceBase("dev101", DeviceEnum.HUMIDIFIER, "卧室加湿器", ""),
-      new DeviceBase("dev102", DeviceEnum.GAS_DETECTOR, "厨房燃气报警器", "")
-    ];
+    this.MqttUtil.subscribe("/devices/unbound/response",0)
+    this.dispatcher.registerHandler('/devices/unbound/response', (payload) => {
+      const ub = JSON.parse(payload) as UnboundDevicePayload;
+      console.info("接收到设备信息：", JSON.stringify(ub));
+      this.unboundDevicesDS.addDevice(
+        new DeviceBase(ub.id, getDeviceType(ub.type), ub.name)
+      );
+      // 处理设备信息，更新数据源等
+    });
+
 
     this.searchTimer = setInterval(() => {
       if (this.isTimeOut) {
         clearInterval(this.searchTimer);
+        clearInterval(this.timeoutTimer)
         console.info("搜索超时，停止搜索。");
+        this.MqttUtil.unsubscribe("/devices/unbound/response",0)
+        this.dispatcher.unregisterHandler('/devices/unbound/response')
         this.refreshing = false;
         return;
       }
-      this.unboundDevicesDS.addDevice(simulatedDevices[Math.floor(Math.random() * 3)]);
-    }, 1000); // 每隔 1 秒发现一个设备
+      //this.getUnboundDeviceFromMqtt();
+    }, 2000);
 
-    // 超时时间设置，例如5秒
+    // 超时时间设置
     this.timeoutTimer = setTimeout(() => {
       this.isTimeOut = true;
-    }, 5000);
+    }, 10000);
   }
+
+  getUnboundDeviceFromMqtt(){
+    this.MqttUtil.publish("/devices/unbound/request", "{}",0)
+  }
+
+
+
+
 
   stopSearchDevices() {
     if (this.searchTimer) {
