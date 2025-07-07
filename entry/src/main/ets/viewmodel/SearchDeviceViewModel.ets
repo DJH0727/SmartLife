@@ -20,21 +20,23 @@ export class SearchDeviceViewModel {
   private searchTimer?: number;
   private timeoutTimer?: number;
   private isTimeOut: boolean = false;
+  private isSearching:boolean = false;
   private dispatcher:MqttMessageDispatcher = MqttMessageDispatcher.getInstance();
 
   constructor() {
     this.unboundDevicesDS = new DeviceDataSource([]);
   }
 
-  // 模拟刷新逻辑
   refreshUnboundDevices() {
-    console.info("正在刷新设备列表...");
-    setTimeout(() => {
-      // 这里为了演示，直接清空并加入一个新设备
-      this.unboundDevicesDS.addDevice(new DeviceBase("dev103", DeviceEnum.AIR_CONDITIONER, "卧室空调", ""))
-      this.unboundDevicesDS.notifyDataReload();
-      this.refreshing = false;
-    }, 1500);
+    if(!this.isSearching)
+        this.startSearchDevices()
+    // console.info("正在刷新设备列表...");
+    // setTimeout(() => {
+    //   // 这里为了演示，直接清空并加入一个新设备
+    //   this.unboundDevicesDS.addDevice(new DeviceBase("dev103", DeviceEnum.AIR_CONDITIONER, "卧室空调", ""))
+    //   this.unboundDevicesDS.notifyDataReload();
+    //   this.refreshing = false;
+    // }, 1500);
 
   }
 
@@ -51,8 +53,10 @@ export class SearchDeviceViewModel {
    * {"id": "dev103","type": "gas_detector","name": "Gree Gas Detector"}
    */
   startSearchDevices() {
-    console.info("开始搜索设备...");
 
+    console.info("开始搜索设备...");
+    this.refreshing = true;
+    this.isSearching = true;
     this.MqttUtil.subscribe("/devices/unbound/response",0)
     this.dispatcher.registerHandler('/devices/unbound/response', (payload) => {
       const ub = JSON.parse(payload) as UnboundDevicePayload;
@@ -72,6 +76,9 @@ export class SearchDeviceViewModel {
         this.MqttUtil.unsubscribe("/devices/unbound/response",0)
         this.dispatcher.unregisterHandler('/devices/unbound/response')
         this.refreshing = false;
+        this.isSearching = false;
+        console.info("set refresh refreshing to "+this.refreshing)
+        this.isTimeOut = false;
         return;
       }
       //this.getUnboundDeviceFromMqtt();
@@ -110,5 +117,10 @@ export class SearchDeviceViewModel {
     console.info("已绑定设备：" + device.getName());
     //this.unboundDevices = this.unboundDevices.filter(d => d.getId() !== device.getId());
   }
+
+  isDevicesEmpty(): boolean {
+    return this.unboundDevicesDS.totalCount() === 0&&this.isTimeOut;
+  }
+
 
 }

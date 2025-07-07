@@ -18,7 +18,7 @@ struct Index {
 
   aboutToAppear(): void {
     this.connect_mqtt();
-    this.pageStack.pushPathByName('SearchDevicePage', '');
+    //this.pageStack.pushPathByName('SearchDevicePage', '');
   }
 
 

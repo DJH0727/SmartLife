@@ -1,6 +1,6 @@
 import { DeviceBase } from "../model/device/DeviceBase";
 import { DeviceEnum } from "../common/enums/DeviceEnum";
-import { DeviceCard } from "../view/DeviceCard";
+import { UnboundDeviceCard } from "../view/UnboundDeviceCard";
 import { Prompt } from "@kit.ArkUI";
 import { ColorConstants } from "../common/enums/ColorEnum";
 import { SearchDeviceViewModel } from "../viewmodel/SearchDeviceViewModel";
@@ -34,30 +34,7 @@ struct SearchDevicePage {
       this.SearchPageTitleBar("添加设备")
       Divider().height(2).color(0xCCCCCC)
 
-      Refresh({ refreshing: $$this.viewModel.refreshing, builder: this.refreshBuilder() }) {
-        List() {
-          LazyForEach(this.viewModel.unboundDevicesDS, (device: DeviceBase) => {
-            ListItem() {
-              DeviceCard({ device })
-                .width("100%")
-                .onClick(() => this.viewModel.bindDevice(device))
-            }
-            .margin({ bottom: 20 })
-          }, (device: DeviceBase) => device.getId())
-        }
-        .width("100%")
-        .height("100%")
-        .scrollBar(BarState.Off)
-        .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
-
-      }
-      .padding(20)
-      .onOffsetChange((offset: number) => this.refreshOffset = offset)
-      .onStateChange((state: RefreshStatus) => this.refreshState = state)
-      .onRefreshing(() => this.onRefresh())
-
-
-
+        this.UnboundDeviceList()
     }
     .width("100%")
     .height("100%")
@@ -67,6 +44,43 @@ struct SearchDevicePage {
 
 
   }
+
+  @Builder
+  EmptyDeviceNotify() {
+    Column() {
+      Text("没有找到设备")
+        .fontSize(20)
+    }
+    .width("100%")
+    .height("100%")
+  }
+
+  @Builder
+  UnboundDeviceList() {
+    Refresh({ refreshing: $$this.viewModel.refreshing, builder: this.refreshBuilder() }) {
+
+      List() {
+        LazyForEach(this.viewModel.unboundDevicesDS, (device: DeviceBase) => {
+          ListItem() {
+            UnboundDeviceCard({ device })
+              .width("100%")
+              //.onClick(() => this.viewModel.bindDevice(device))
+          }
+          .margin({ bottom: 20 })
+        }, (device: DeviceBase) => device.getId())
+      }
+      .width("100%")
+      .height("100%")
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+
+    }
+    .padding(20)
+    .onOffsetChange((offset: number) => this.refreshOffset = offset)
+    .onStateChange((state: RefreshStatus) => this.refreshState = state)
+    .onRefreshing(() => this.onRefresh())
+  }
+
 
 
   @Builder
