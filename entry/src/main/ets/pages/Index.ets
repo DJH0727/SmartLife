@@ -10,7 +10,7 @@ struct Index {
   @Provide('NavPathStack') pageStack: NavPathStack = new NavPathStack()
   @State currentTab: number = 0;
   aboutToAppear(): void {
-    this.pageStack.pushPathByName('SearchDevicePage', '');
+    //this.pageStack.pushPathByName('SearchDevicePage', '');
   }
 
 

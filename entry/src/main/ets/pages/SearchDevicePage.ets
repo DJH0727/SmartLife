@@ -20,12 +20,11 @@ struct SearchDevicePage {
 
 
   aboutToAppear(): void {
-    this.viewModel.loadUnboundDevices();
+    this.viewModel.startSearchDevices();
   }
 
   aboutToDisappear(): void {
-    console.info("SearchDevicePage aboutToDisappear");
-
+    this.viewModel.stopSearchDevices();
   }
 
 
@@ -36,7 +35,7 @@ struct SearchDevicePage {
 
       Refresh({ refreshing: $$this.viewModel.refreshing, builder: this.refreshBuilder() }) {
         List() {
-          ForEach(this.viewModel.unboundDevices, (device: DeviceBase) => {
+          LazyForEach(this.viewModel.unboundDevicesDS, (device: DeviceBase) => {
             ListItem() {
               DeviceCard({ device })
                 .width("100%")
@@ -84,7 +83,6 @@ struct SearchDevicePage {
   }
 
   private onRefresh() {
-    console.info("正在刷新设备列表...");
     this.viewModel.refreshUnboundDevices();
   }
 

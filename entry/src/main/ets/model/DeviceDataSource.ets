@@ -32,6 +32,10 @@ export class DeviceDataSource implements IDataSource {
     this.listeners.forEach(listener => listener.onDataMove(from, to));
   }
 
+  notifyDataAdd(index: number): void {
+    this.listeners.forEach(listener => listener.onDataAdd(index));
+  }
+
   // 通知LazyForEach组件在index对应索引处数据有变化，需要重建该子组件
   notifyDataChange(index: number): void {
     this.listeners.forEach(listener => {
@@ -50,5 +54,10 @@ export class DeviceDataSource implements IDataSource {
     const item = this.devices.splice(from, 1)[0];
     this.devices.splice(to, 0, item);
     this.notifyDataMove(from, to);
+  }
+
+  addDevice(device: DeviceBase): void {
+    this.devices.push(device);
+    this.notifyDataAdd(this.devices.length - 1);
   }
 }

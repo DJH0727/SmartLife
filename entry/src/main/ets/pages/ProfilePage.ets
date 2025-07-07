@@ -23,7 +23,7 @@ export struct ProfilePage {
       }
       .width('100%')
       .height('50%')
-      .backgroundImage( $r('app.media.img_avatar_mine'))
+      .backgroundImage( $r('app.media.img_profile_ikun'))
       .backgroundImageSize({ height: '100%', width: '100%' })
       .backgroundBlurStyle(BlurStyle.Regular)
       Column({ space: 10 }) {
