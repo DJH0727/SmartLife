@@ -1,0 +1,12 @@
+{
+  "routerMap": [
+    {
+      "name": "SearchDevicePage",
+      "pageSourceFile": "src/main/ets/pages/SearchDevicePage.ets",
+      "buildFunction": "SearchDevicePageBuilder",
+      "data": {
+        "description" : "搜索设备页面"
+      }
+    }
+  ]
+}

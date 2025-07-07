@@ -9,7 +9,6 @@ import { DeviceEnum } from '../common/enums/DeviceEnum';
 @Component
 export  struct DeviceCard {
   @Prop device: DeviceBase
-  @State isPowerOn: boolean = false
 
   build() {
     Column({space: 8}) {
@@ -45,10 +44,11 @@ export  struct DeviceCard {
         }
         .width(36)
         .height(36)
-        .backgroundColor(this.isPowerOn ? ColorConstants.DEVICE_POWER_ON_COLOR : ColorConstants.DEVICE_POWER_OFF_COLOR)
+        .backgroundColor(this.device.getPowerStatus() ? ColorConstants.DEVICE_POWER_ON_COLOR : ColorConstants.DEVICE_POWER_OFF_COLOR)
         .onClick(() => {
-          this.isPowerOn = !this.isPowerOn;
-          const msg = this.isPowerOn ? '已开启' : '已关闭';
+          const isPowerOn = !this.device.getPowerStatus();
+          this.device.setPowerStatus(isPowerOn);
+          const msg = isPowerOn? '已开启' : '已关闭';
           promptAction.showToast({ message: this.device.getName() + ' ' + msg })
         });
       }
@@ -69,7 +69,7 @@ export  struct DeviceCard {
     .borderRadius(16)
     .shadow({ radius: 2, color: ColorConstants.GRAY, offsetX: 0, offsetY: 4 })
     .onAppear(() => {
-      this.isPowerOn = this.device.getPowerStatus();
+
     })
 
   }

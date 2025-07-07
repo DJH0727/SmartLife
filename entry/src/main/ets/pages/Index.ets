@@ -6,8 +6,14 @@ import { DeviceCardTestPage } from '../test/DeviceCardTestPage';
 @Entry
 @Component
 struct Index {
-  pageStack: NavPathStack = new NavPathStack()
+
+  @Provide('NavPathStack') pageStack: NavPathStack = new NavPathStack()
   @State currentTab: number = 0;
+  aboutToAppear(): void {
+    this.pageStack.pushPathByName('SearchDevicePage', '');
+  }
+
+
   build() {
     Navigation(this.pageStack) {
       Column() {
