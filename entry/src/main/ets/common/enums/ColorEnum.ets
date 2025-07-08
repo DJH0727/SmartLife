@@ -15,6 +15,7 @@ export enum ColorConstants {
   SEARCH_PAGE_TITLE_BG_COLOR = '#FFFFFF',
   SEARCH_PAGE_BG_COLOR = '#F5F5F5',
   DEVICE_BOUND_BUTTON_COLOR = "#2196F3",
+    SUBTITLE_FONT_COLOR = '#666666',
 
 
   PRIMARY_BLUE = '#2196F3',
@@ -33,5 +34,7 @@ export enum ColorConstants {
   ERROR_RED = '#F44336',
 
   ALERT_RED = '#FF0000',
+  // 透明
+  TRANSPARENT = '\#00000000',
 
 }

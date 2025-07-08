@@ -8,6 +8,7 @@ export class DeviceBase {
    online: boolean;
    isPowerOn: boolean;          // 开关状态
    lastUpdate: number;
+   image: string = 'app.media.img_device_test';
 
   constructor(id: string, type: DeviceEnum, name: string, bindCode: string='', isPowerOn = false, online = false, lastUpdate = 0) {
     this.id = id;
@@ -17,6 +18,19 @@ export class DeviceBase {
     this.isPowerOn = isPowerOn;
     this.online = online;
     this.lastUpdate = lastUpdate;
+  }
+  getImage(): string {
+    switch (this.type) {
+      //TODO: 拓展
+      case DeviceEnum.AIR_CONDITIONER:
+        return "app.media.img_device_test";
+      case DeviceEnum.HUMIDIFIER:
+        return "app.media.img_device_test";
+      case DeviceEnum.GAS_DETECTOR:
+        return "app.media.img_device_test";
+      default:
+        return "app.media.img_device_test";
+    }
   }
 
   isBound(): boolean {

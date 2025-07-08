@@ -81,13 +81,13 @@ export class SearchDeviceViewModel {
         this.isTimeOut = false;
         return;
       }
-      //this.getUnboundDeviceFromMqtt();
-    }, 2000);
+      this.getUnboundDeviceFromMqtt();
+    }, 1000);
 
     // 超时时间设置
     this.timeoutTimer = setTimeout(() => {
       this.isTimeOut = true;
-    }, 10000);
+    }, 5000);
   }
 
   getUnboundDeviceFromMqtt(){

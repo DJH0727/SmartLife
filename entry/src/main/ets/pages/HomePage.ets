@@ -32,7 +32,11 @@ export struct HomePage {
   build() {
     Column() {
       this.CustomTitleBar()
-      this.DeviceGrid()
+      Scroll(){
+        this.DeviceGrid()
+      }
+      .width('100%')
+      .height("92%")
     }
     .width('100%')
     .height('100%')
@@ -51,11 +55,11 @@ export struct HomePage {
         Text(UserName+" 的家")
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#000000')
+          .fontColor(ColorConstants.BLACK)
 
         Text(this.deviceCount+" 个设备")
           .fontSize(14)
-          .fontColor('#666666')
+          .fontColor(ColorConstants.SUBTITLE_FONT_COLOR)
       }
       .alignItems(HorizontalAlign.Start) // 左对齐
 
@@ -139,6 +143,7 @@ export struct HomePage {
     .width('100%')
     .height('100%')
     .padding(20)
+
   }
 
 

@@ -29,7 +29,7 @@ export  struct DeviceCard {
       .alignItems(HorizontalAlign.Start)
 
       Row() {
-        Image($r('app.media.img_device_test'))
+        Image($r(this.device.getImage()))
           .height(72)
           .borderRadius(24)
           .objectFit(ImageFit.Contain)

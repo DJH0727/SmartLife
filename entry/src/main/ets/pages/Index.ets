@@ -78,7 +78,7 @@ struct Index {
       clientId: 'harmony_app_client',
       username: 'harmonyos',
       password: 'password',
-      connectTimeout: 300,
+      connectTimeout: 3000,
     };
     const subscriptions: MQTTSubscription[] = [];
     await this.MqttUtil.connect(

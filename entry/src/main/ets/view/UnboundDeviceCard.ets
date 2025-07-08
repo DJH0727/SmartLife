@@ -2,16 +2,18 @@ import promptAction from '@ohos.promptAction';
 import { DeviceBase } from '../model/device/DeviceBase';
 import { ColorConstants } from '../common/enums/ColorEnum';
 import { HomePageViewModel } from '../viewmodel/HomePageViewModel';
+import { CustomContentDialog } from '@kit.ArkUI';
 
 @Preview
 @Component
 export struct UnboundDeviceCard {
   @Prop device: DeviceBase;
+  private isBoundSuccess: boolean = false;
 
   build() {
     Row() {
       // 左侧图片
-      Image($r('app.media.img_device_test'))
+      Image($r(this.device.getImage()))
         .height(96)
         .borderRadius(96)
         .objectFit(ImageFit.Contain);
@@ -50,9 +52,8 @@ export struct UnboundDeviceCard {
       .backgroundColor(ColorConstants.DEVICE_BOUND_BUTTON_COLOR)
       .borderRadius(18)
       .onClick(() => {
-        console.info('绑定设备：' + this.device.getName());
-        const  viewModel: HomePageViewModel = HomePageViewModel.getInstance()
-        viewModel.addDeviceTest();
+        this.checkDialogController.open()
+        //viewModel.addDeviceTest();
       });
     }
     .width('100%')
@@ -68,4 +69,114 @@ export struct UnboundDeviceCard {
     .justifyContent(FlexAlign.SpaceBetween)
     .alignItems(VerticalAlign.Center);
   }
+
+
+
+
+  checkDialogController: CustomDialogController = new CustomDialogController({
+    builder: CustomContentDialog({
+      primaryTitle: '确认绑定这个设备吗',
+      secondaryTitle: this.device.id,
+      contentBuilder: () => {
+        this.buildContent();
+      },
+      buttons: [
+        {
+          value: '取消',
+          buttonStyle: ButtonStyleMode.TEXTUAL,
+          action: () => {
+            console.info("取消绑定")
+          }
+        },
+        {
+          value: '确认',
+          buttonStyle: ButtonStyleMode.TEXTUAL,
+          role: ButtonRole.ERROR,
+          action: () => {
+            this.boundDialogController.open()
+            const  viewModel: HomePageViewModel = HomePageViewModel.getInstance()
+            this.isBoundSuccess = viewModel.boundDevice(this.device)
+            //this.boundDialogController.close()
+            //this.resultDialogController.open()
+
+            console.info('尝试绑定设备：' + this.device.getId());
+          }
+        }
+      ],
+    }),
+  });
+
+  @Builder
+  buildContent(){
+    Row(){
+      Image($r(this.device.getImage()))
+        .height(120)
+    }
+    .width("100%")
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor(ColorConstants.TRANSPARENT)
+  }
+
+
+  boundDialogController: CustomDialogController = new CustomDialogController({
+    builder: CustomContentDialog({
+      primaryTitle: '绑定中，请在设备确定',
+      secondaryTitle: this.device.id,
+      contentBuilder: () => {
+        this.boundLoadingBuilder();
+      },
+      buttons: [{
+          value: '取消',
+          buttonStyle: ButtonStyleMode.TEXTUAL,
+          action: () => {
+            console.info("取消绑定")
+          }
+        }]
+    }),
+  });
+
+  @Builder
+  boundLoadingBuilder(){
+    Row(){
+      Column() {
+        LoadingProgress()
+          .color(Color.Blue)
+          .layoutWeight(1)
+          .width(40)
+          .height(40)
+
+        Text('绑定中...')
+          .margin({ top: 8 })
+          .fontSize(16)
+          .fontColor(ColorConstants.GRAY)
+      }
+      .height(100)
+      Image($r(this.device.getImage()))
+        .height(120)
+    }
+    .width("100%")
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor(ColorConstants.TRANSPARENT)
+  }
+
+  resultDialogController: CustomDialogController = new CustomDialogController({
+    builder: CustomContentDialog({
+      primaryTitle: this.isBoundSuccess?'绑定成功':'绑定失败',
+      secondaryTitle: this.device.id,
+      contentBuilder: () => {
+      },
+      theme:{colors:{fontPrimary:ColorConstants.ERROR_RED}},
+      buttons: [{
+        value: '确定',
+        buttonStyle: ButtonStyleMode.TEXTUAL,
+        action: () => {
+        }
+      }]
+    }),
+  });
+
+
+
+
+
 }

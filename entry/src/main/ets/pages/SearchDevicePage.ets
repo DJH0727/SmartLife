@@ -117,7 +117,7 @@ struct SearchDevicePage {
 
         Text(content)
           .fontSize(20)
-          .fontColor('#000000')
+          .fontColor(ColorConstants.BLACK)
           .margin({ left: 10 })
       }
       Button({ type: ButtonType.Normal, stateEffect: true })

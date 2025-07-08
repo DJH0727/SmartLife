@@ -50,7 +50,8 @@ export default class MQTTUtil {
     const isConnect = await this.mqttAsyncClient.connect({
       userName: options.username,
       password: options.password,
-      connectTimeout: options.connectTimeout ?? 300,
+      connectTimeout: options.connectTimeout ?? 3000,
+      keepAliveInterval:60,//心跳间隔
     });
     if (!isConnect) {
       console.error('MQTT连接失败');

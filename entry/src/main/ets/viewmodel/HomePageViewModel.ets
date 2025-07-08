@@ -6,6 +6,7 @@ import preferences from '@ohos.data.preferences';
 import { DeviceEnum, getDeviceType } from "../common/enums/DeviceEnum";
 import { emitter } from "@kit.BasicServicesKit";
 import { DEVICES_JSON_KEY, DEVICE_UPDATE_EVENT } from "../common/constants/CommonConstants";
+import MQTTUtil from "../common/utils/MQTTUtil";
 
 
 export class HomePageViewModel {
@@ -13,6 +14,7 @@ export class HomePageViewModel {
   devicesDS: DeviceDataSource;
   deviceCount: number;
   private preferenceDevices: preferences.Preferences | undefined;
+  MqttUtil:MQTTUtil=MQTTUtil.getInstance();
 
   constructor() {
     this.devicesDS = new DeviceDataSource([]);
@@ -46,6 +48,17 @@ export class HomePageViewModel {
     this.deviceCount = this.devicesDS.totalCount();
     this.saveDevices();
     emitter.emit(DEVICE_UPDATE_EVENT );
+  }
+
+  boundDevice(device: DeviceBase):boolean {
+    return false
+  }
+
+  addDevice(device: DeviceBase) {
+    this.devicesDS.addDevice(device);
+    this.deviceCount = this.devicesDS.totalCount();
+    this.saveDevices();
+    emitter.emit(DEVICE_UPDATE_EVENT);
   }
 
 
