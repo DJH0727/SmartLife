@@ -22,7 +22,7 @@ export class AirConditionerDevice extends DeviceBase {
   constructor(
     id: string,
     name: string,
-    bindCode: string='',
+    isBind:boolean=false,
     isPowerOn = false,
     currentTemperature = 25,
     targetTemperature = 26,
@@ -31,7 +31,7 @@ export class AirConditionerDevice extends DeviceBase {
     online = false,
     lastUpdate = 0
   ) {
-    super(id, DeviceEnum.AIR_CONDITIONER, name, bindCode,isPowerOn, online, lastUpdate);
+    super(id, DeviceEnum.AIR_CONDITIONER, name,isBind,isPowerOn, online, lastUpdate);
     this.currentTemperature = currentTemperature;
     this.targetTemperature = targetTemperature;
     this.fanSpeed = fanSpeed;

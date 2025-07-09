@@ -46,6 +46,10 @@ export  struct DeviceCard {
         .height(36)
         .backgroundColor(this.device.getPowerStatus() ? ColorConstants.DEVICE_POWER_ON_COLOR : ColorConstants.DEVICE_POWER_OFF_COLOR)
         .onClick(() => {
+          //TODO: 模拟控制设备开关
+          //向/devices/this.device.id/set 发送命令
+
+
           const isPowerOn = !this.device.getPowerStatus();
           this.device.setPowerStatus(isPowerOn);
           const msg = isPowerOn? '已开启' : '已关闭';

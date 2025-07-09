@@ -8,6 +8,7 @@ import { AirConditionerDevice } from "../model/device/AirConditionerDevice";
 import { DeviceDataSource } from "../model/DeviceDataSource";
 import { HomePageViewModel } from "../viewmodel/HomePageViewModel";
 import { emitter } from "@kit.BasicServicesKit";
+import { LengthMetrics } from "@kit.ArkUI";
 
 @Component
 export struct HomePage {
@@ -93,12 +94,17 @@ export struct HomePage {
           this.pageStack.pushPathByName('SearchDevicePage', '');
           console.log("添加设备")
         })
+
       MenuItem({ content: " Test" })
         .onClick(() => {
           this.viewModel.addDeviceTest();
 
         })
     }
+    .menuItemDivider({
+      strokeWidth: LengthMetrics.vp(1),
+      color: '#d5d5d5',
+    })
   }
   @Builder
   DeviceGridItem(device:DeviceBase){

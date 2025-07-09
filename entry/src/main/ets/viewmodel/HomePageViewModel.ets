@@ -5,8 +5,9 @@ import { DeviceBase } from "../model/device/DeviceBase";
 import preferences from '@ohos.data.preferences';
 import { DeviceEnum, getDeviceType } from "../common/enums/DeviceEnum";
 import { emitter } from "@kit.BasicServicesKit";
-import { DEVICES_JSON_KEY, DEVICE_UPDATE_EVENT } from "../common/constants/CommonConstants";
+import { DEVICES_JSON_KEY, DEVICE_UPDATE_EVENT, LOCAL_DEVICE_NAME } from "../common/constants/CommonConstants";
 import MQTTUtil from "../common/utils/MQTTUtil";
+import { MqttMessageDispatcher } from "../common/utils/MqttMessageDispatcher";
 
 
 export class HomePageViewModel {
@@ -15,6 +16,7 @@ export class HomePageViewModel {
   deviceCount: number;
   private preferenceDevices: preferences.Preferences | undefined;
   MqttUtil:MQTTUtil=MQTTUtil.getInstance();
+  private dispatcher:MqttMessageDispatcher = MqttMessageDispatcher.getInstance();
 
   constructor() {
     this.devicesDS = new DeviceDataSource([]);
@@ -43,15 +45,62 @@ export class HomePageViewModel {
 
   addDeviceTest(){
     const rd = Math.floor(Math.random() * 1000)
-    const device = new AirConditionerDevice('dev'+rd, '测试设备'+rd, 'BIND004', true);
+    const device = new AirConditionerDevice('dev'+rd, '测试设备'+rd, true, true);
     this.devicesDS.addDevice(device);
     this.deviceCount = this.devicesDS.totalCount();
     this.saveDevices();
     emitter.emit(DEVICE_UPDATE_EVENT );
   }
 
-  boundDevice(device: DeviceBase):boolean {
-    return false
+
+  // 在类成员声明一个变量，存储超时定时器和取消标志
+  private bindTimeout: number | null = null;
+  private isBindCancelled = false;
+
+  async boundDevice(id: string): Promise<boolean> {
+    const requestTopic = `/devices/${id}/bound/request`;
+    const responseTopic = `/devices/${id}/bound/response`;
+    const payload = JSON.stringify({
+      requester: LOCAL_DEVICE_NAME,
+    });
+
+    this.isBindCancelled = false; // 绑定前清除取消标志
+
+    return new Promise<boolean>(async (resolve) => {
+      const handler = (message: string) => {
+        if (this.isBindCancelled) return; // 已取消则不处理
+        console.info("收到绑定响应：" + message);
+        if (this.bindTimeout) clearTimeout(this.bindTimeout);
+        this.MqttUtil.unsubscribe(responseTopic);
+        this.dispatcher.unregisterHandler(responseTopic);
+        resolve(true);
+      };
+
+      await this.MqttUtil.subscribe(responseTopic, 0);
+      this.dispatcher.registerHandler(responseTopic, handler);
+
+      console.info("发送绑定请求：" + requestTopic + " payload: " + payload);
+      await this.MqttUtil.publish(requestTopic, payload);
+
+      this.bindTimeout = setTimeout(() => {
+        if (this.isBindCancelled) return;
+        console.warn("绑定超时");
+        this.MqttUtil.unsubscribe(responseTopic);
+        this.dispatcher.unregisterHandler(responseTopic);
+        resolve(false);
+      }, 10000);
+    });
+  }
+
+  // 取消绑定操作的函数
+  cancelBind(id: string) {
+    this.isBindCancelled = true;
+    if (this.bindTimeout) clearTimeout(this.bindTimeout);
+    // 退订响应主题并注销回调
+    const responseTopic = `/devices/${id}/bound/response`;
+    this.MqttUtil.unsubscribe(responseTopic);
+    this.dispatcher.unregisterHandler(responseTopic);
+    console.info("绑定操作已取消");
   }
 
   addDevice(device: DeviceBase) {
@@ -103,16 +152,13 @@ export class HomePageViewModel {
       const type = getDeviceType(parsed[i].type)
       switch (type) {
         case DeviceEnum.AIR_CONDITIONER:
-          const raw = parsed[i] as AirConditionerDevice;
-          devices.push(new AirConditionerDevice(
+          const raw = parsed[i] as DeviceBase;
+          devices.push(new DeviceBase(
             raw.id,
+            raw.type,
             raw.name,
-            raw.bindCode,
+            raw.isBind,
             raw.isPowerOn,
-            raw.currentTemperature,
-            raw.targetTemperature,
-            raw.fanSpeed,
-            raw.mode,
             raw.online,
             raw.lastUpdate
           ));

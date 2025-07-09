@@ -4,17 +4,17 @@ export class DeviceBase {
    id: string;
    type: DeviceEnum;
    name: string;
-   bindCode: string;
+   isBind: boolean;;
    online: boolean;
    isPowerOn: boolean;          // 开关状态
    lastUpdate: number;
    image: string = 'app.media.img_device_test';
 
-  constructor(id: string, type: DeviceEnum, name: string, bindCode: string='', isPowerOn = false, online = false, lastUpdate = 0) {
+  constructor(id: string, type: DeviceEnum, name: string, isBind:boolean=false, isPowerOn = false, online = false, lastUpdate = 0) {
     this.id = id;
     this.type = type;
     this.name = name;
-    this.bindCode = bindCode;
+    this.isBind = isBind;
     this.isPowerOn = isPowerOn;
     this.online = online;
     this.lastUpdate = lastUpdate;
@@ -34,7 +34,7 @@ export class DeviceBase {
   }
 
   isBound(): boolean {
-    return this.bindCode !== '';
+   return this.isBind;
   }
 
   // ===== Getters =====
@@ -50,8 +50,8 @@ export class DeviceBase {
     return this.name;
   }
 
-  getBindCode(): string {
-    return this.bindCode;
+  setBound(isBound: boolean): void {
+      this.isBind = isBound;
   }
 
   isOnline(): boolean {
@@ -79,9 +79,6 @@ export class DeviceBase {
     this.name = name;
   }
 
-  setBindCode(bindCode: string): void {
-    this.bindCode = bindCode;
-  }
 
   setOnline(online: boolean): void {
     this.online = online;

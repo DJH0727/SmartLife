@@ -7,7 +7,7 @@ import { DeviceCard } from '../view/DeviceCard';
 
 @Component
 export  struct DeviceCardTestPage {
-  @State private device: DeviceBase = new AirConditionerDevice('ac01', '客厅空调','ac-1414141');
+  @State private device: DeviceBase = new AirConditionerDevice('ac01', '客厅空调',true);
 
   build() {
     Column() {

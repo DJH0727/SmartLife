@@ -8,7 +8,8 @@ import { CustomContentDialog } from '@kit.ArkUI';
 @Component
 export struct UnboundDeviceCard {
   @Prop device: DeviceBase;
-  private isBoundSuccess: boolean = false;
+  @State isBoundSuccess: boolean = false;
+  private newName: string = '';
 
   build() {
     Row() {
@@ -42,15 +43,16 @@ export struct UnboundDeviceCard {
 
       // 右侧绑定按钮
       Button() {
-        Text('绑定')
+        Text(this.isBoundSuccess ? '已绑定' :'绑定')
           .fontSize(16)
           .fontWeight(FontWeight.Medium)
           .fontColor(ColorConstants.WHITE);
       }
       .width(80)
       .height(36)
-      .backgroundColor(ColorConstants.DEVICE_BOUND_BUTTON_COLOR)
+      .backgroundColor(this.isBoundSuccess?ColorConstants.DEVICE_BOUND_BUTTON_COLOR:ColorConstants.DEVICE_UNBOUND_BUTTON_COLOR)
       .borderRadius(18)
+      .enabled(!this.isBoundSuccess)
       .onClick(() => {
         this.checkDialogController.open()
         //viewModel.addDeviceTest();
@@ -92,14 +94,19 @@ export struct UnboundDeviceCard {
           value: '确认',
           buttonStyle: ButtonStyleMode.TEXTUAL,
           role: ButtonRole.ERROR,
-          action: () => {
-            this.boundDialogController.open()
-            const  viewModel: HomePageViewModel = HomePageViewModel.getInstance()
-            this.isBoundSuccess = viewModel.boundDevice(this.device)
-            //this.boundDialogController.close()
-            //this.resultDialogController.open()
+          action: async () => {
+            this.boundDialogController.open();
 
-            console.info('尝试绑定设备：' + this.device.getId());
+            const viewModel: HomePageViewModel = HomePageViewModel.getInstance();
+
+            // 等待绑定操作完成
+            this.isBoundSuccess = await viewModel.boundDevice(this.device.getId());
+            console.info('尝试绑定设备：' + this.device.getId()+ ' ' + this.isBoundSuccess);
+            // 关闭加载弹窗，显示结果
+            this.boundDialogController.close();
+            this.resultDialogController.open();
+
+
           }
         }
       ],
@@ -129,10 +136,12 @@ export struct UnboundDeviceCard {
           value: '取消',
           buttonStyle: ButtonStyleMode.TEXTUAL,
           action: () => {
-            console.info("取消绑定")
+            const viewModel: HomePageViewModel = HomePageViewModel.getInstance();
+            viewModel.cancelBind(this.device.getId());
           }
         }]
     }),
+    autoCancel:false
   });
 
   @Builder
@@ -164,16 +173,84 @@ export struct UnboundDeviceCard {
       primaryTitle: this.isBoundSuccess?'绑定成功':'绑定失败',
       secondaryTitle: this.device.id,
       contentBuilder: () => {
-      },
-      theme:{colors:{fontPrimary:ColorConstants.ERROR_RED}},
-      buttons: [{
-        value: '确定',
-        buttonStyle: ButtonStyleMode.TEXTUAL,
-        action: () => {
+        if(this.isBoundSuccess) {
+          this.successContentBuilder();
         }
-      }]
+        else {
+          this.failContentBuilder();
+        }
+      },
+      theme:{colors:{fontPrimary:this.isBoundSuccess?ColorConstants.SUCCESS_GREEN:ColorConstants.ERROR_RED}},
     }),
+    autoCancel:false
   });
+
+  @Builder
+  successContentBuilder(){
+    Column() {
+        Text('设备名称：')
+          .fontSize(16)
+          .fontColor(ColorConstants.BLACK)
+          .margin({ bottom: 6 })
+
+        TextInput({ text: this.device.getName() })
+          .width('80%')
+          .height(40)
+          .backgroundColor('#F0F0F0')
+          .fontColor(ColorConstants.BLACK)
+          .borderRadius(8)
+          .padding({ left: 8, right: 8 })
+          .onChange((val: string) => {
+            this.newName = val
+          })
+
+      Button() {
+        Text('确定')
+          .fontSize(20)
+          .fontColor(ColorConstants.IOS_BLUE)
+      }
+      .margin({ top: 16 })
+      .width("100%")
+      .height(24)
+      .backgroundColor(ColorConstants.TRANSPARENT)
+      .onClick(() => {
+        // 更新设备名称
+        this.device.name = this.newName;
+        const viewModel: HomePageViewModel = HomePageViewModel.getInstance();
+        viewModel.addDevice(this.device);
+        // 关闭弹窗
+        this.resultDialogController.close();
+
+        console.info('设备名称已修改为：' + this.newName);
+      });
+
+
+    }
+    .width('100%')
+    .justifyContent(FlexAlign.Center)
+    .alignItems(HorizontalAlign.Center)
+  }
+
+  @Builder
+  failContentBuilder(){
+    Column() {
+      Button() {
+        Text('确定')
+          .fontSize(20)
+          .fontColor(ColorConstants.IOS_BLUE)
+      }
+      .width("100%")
+      .height(40)
+      .backgroundColor(ColorConstants.TRANSPARENT)
+      .onClick(() => {
+        this.resultDialogController.close();
+      })
+    }
+    .width('100%')
+    .justifyContent(FlexAlign.Center)
+    .alignItems(HorizontalAlign.Center)
+  }
+
 
 
 

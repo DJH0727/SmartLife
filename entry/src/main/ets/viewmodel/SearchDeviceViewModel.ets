@@ -8,7 +8,7 @@ interface UnboundDevicePayload {
   id: string;
   type: string;
   name: string;
-  bindCode?: string;
+  isBind: number;
   isPowerOn?: boolean;
   lastUpdate?: number;
 }
@@ -40,13 +40,6 @@ export class SearchDeviceViewModel {
 
   }
 
-  loadUnboundDevices() {
-    const initialDevices = [
-      new DeviceBase("dev100", DeviceEnum.AIR_CONDITIONER, "客厅空调", ""),
-      new DeviceBase("dev101", DeviceEnum.HUMIDIFIER, "卧室加湿器", ""),
-    ];
-    this.unboundDevicesDS = new DeviceDataSource(initialDevices);
-  }
   /*
    * {"id": "dev101","type": "air_conditioner","name": "Gree Air Conditioner"}
    * {"id": "dev102","type": "humidifier","name": "Gree Humidifier"}
@@ -57,16 +50,22 @@ export class SearchDeviceViewModel {
     console.info("开始搜索设备...");
     this.refreshing = true;
     this.isSearching = true;
-    this.MqttUtil.subscribe("/devices/unbound/response",0)
+
     this.dispatcher.registerHandler('/devices/unbound/response', (payload) => {
       const ub = JSON.parse(payload) as UnboundDevicePayload;
       console.info("接收到设备信息：", JSON.stringify(ub));
-      this.unboundDevicesDS.addDevice(
-        new DeviceBase(ub.id, getDeviceType(ub.type), ub.name)
-      );
+      if(!ub.isBind){
+        this.unboundDevicesDS.addDevice(
+          new DeviceBase(ub.id, getDeviceType(ub.type), ub.name)
+        );
+      }
+
       // 处理设备信息，更新数据源等
     });
 
+    setTimeout(() => {
+      this.MqttUtil.subscribe("/devices/unbound/response", 0);
+    }, 50); // 50ms 通常足够
 
     this.searchTimer = setInterval(() => {
       if (this.isTimeOut) {
@@ -87,7 +86,8 @@ export class SearchDeviceViewModel {
     // 超时时间设置
     this.timeoutTimer = setTimeout(() => {
       this.isTimeOut = true;
-    }, 5000);
+    }, 2000);
+
   }
 
   getUnboundDeviceFromMqtt(){
@@ -112,14 +112,6 @@ export class SearchDeviceViewModel {
     this.isSearching = false;
   }
 
-
-
-
-  bindDevice(device: DeviceBase) {
-    device.setBindCode("BIND_" + device.getId());
-    console.info("已绑定设备：" + device.getName());
-    //this.unboundDevices = this.unboundDevices.filter(d => d.getId() !== device.getId());
-  }
 
   isDevicesEmpty(): boolean {
     return this.unboundDevicesDS.totalCount() === 0&&this.isTimeOut;
