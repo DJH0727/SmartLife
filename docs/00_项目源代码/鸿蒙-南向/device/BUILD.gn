@@ -1,0 +1,35 @@
+
+static_library("device_app") {
+    sources = [
+        "src/aht20.c",
+        "src/mq_2.c",
+        "src/wifi.c",
+        "src/mqtt.c",
+        "src/mqtt1.c",
+        "src/oled_ssd1306.c",
+        "src/oled.c",
+        "src/beep.c",
+        "src/i2c.c",
+        "src/key.c",
+        "ac.c",
+        "speaker.c",
+        "ems.c",
+        "device_app.c"
+    ]
+
+    include_dirs = [
+        "include",
+        "//utils/native/lite/include",
+        "//kernel/liteos_m/components/cmsis/2.0",
+        "//base/iot_hardware/interfaces/kits/wifiiot_lite",
+        "//vendor/hisi/hi3861/hi3861/third_party/lwip_sack/include",
+        "//foundation/communication/interfaces/kits/wifi_lite/wifiservice",
+        "//third_party/pahomqtt/MQTTPacket/src",
+        "//third_party/pahomqtt/MQTTClient-C/src",
+        "//third_party/pahomqtt/MQTTClient-C/src/liteOS",
+    ]
+#表示需要a_myparty 软件包
+    deps = [
+        "//third_party/pahomqtt:pahomqtt_static",
+    ]
+}

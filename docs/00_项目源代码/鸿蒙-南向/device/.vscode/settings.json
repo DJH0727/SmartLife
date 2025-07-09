@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "common.h": "c",
+        "mqtt.h": "c",
+        "mq_2.h": "c",
+        "oled_ssd1306.h": "c",
+        "oled.h": "c",
+        "beep.h": "c",
+        "aht20.h": "c",
+        "wifi.h": "c",
+        "ac.h": "c",
+        "mqtt1.h": "c",
+        "speaker.h": "c",
+        "i2c.h": "c",
+        "ems.h": "c",
+        "oled_fonts.h": "c",
+        "key.h": "c"
+    }
+}
