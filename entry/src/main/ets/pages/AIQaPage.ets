@@ -126,15 +126,15 @@ export struct AIQaPage {
       Row() {
         // 室内温度卡片
         Row() {
-          Text('🌡室内温度 ')
-            .fontSize(18)
+          Text('🌡 ')
+            .fontSize(14)
             .margin({ right: 6 })
           Text(this.emsData.temp.toString())
-            .fontSize(32)
+            .fontSize(24)
             .fontWeight(FontWeight.Bold)
             .fontColor('#222')
           Text('°C')
-            .fontSize(18)
+            .fontSize(12)
             .fontColor('#222')
             .margin({ top: 4 }) // 调整baseline对齐
         }
@@ -147,16 +147,16 @@ export struct AIQaPage {
 
         // 湿度卡片
         Row() {
-          Text('💧室内湿度 ')
-            .fontSize(18)
+          Text('💧 ')
+            .fontSize(14)
             .margin({ right: 6 })
           Text(this.emsData.hum.toString())
-            .fontSize(32)
+            .fontSize(24)
             .fontWeight(FontWeight.Bold)
             .fontColor('#222')
             .margin({ top: 4 })
           Text('%')
-            .fontSize(18)
+            .fontSize(12)
             .fontColor('#888')
             .margin({ top: 4 })
 
@@ -169,16 +169,16 @@ export struct AIQaPage {
         .shadow({ radius: 4, color: '#ccc', offsetX: 1, offsetY: 2 })
         // 湿度卡片
         Row() {
-          Text('🔥可燃气体浓度 ')
-            .fontSize(18)
+          Text('🔥 ')
+            .fontSize(14)
             .margin({ right: 6 })
           Text(this.emsData.gas.toString())
-            .fontSize(32)
+            .fontSize(24)
             .fontWeight(FontWeight.Bold)
             .fontColor('#222')
             .margin({ top: 4 })
           Text('ppm')
-            .fontSize(18)
+            .fontSize(12)
             .fontColor('#888')
             .margin({ top: 4 })
 
