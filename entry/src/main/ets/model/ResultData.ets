@@ -1,7 +1,7 @@
-export interface ResultData<T> {
+export interface ResultData {
   success: boolean;
 
   message: string;
 
-  data: T;
+  data: string;
 }

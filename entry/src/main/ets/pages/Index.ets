@@ -1,6 +1,7 @@
 import {ColorConstants} from '../common/enums/ColorEnum'
 import { HomePage } from './HomePage';
 import { ProfilePage } from './ProfilePage';
+import { AIQaPage } from './AIQaPage';
 import { MqttTestPage } from '../test/MqttTestPage';
 import { DeviceCardTestPage } from '../test/DeviceCardTestPage';
 import MQTTUtil, { MQTTConnectOptions, MQTTSubscription } from '../common/utils/MQTTUtil';
@@ -28,7 +29,7 @@ struct Index {
         Tabs({ index: this.currentTab }) {
           TabContent() {HomePage();}
           .tabBar(this.createTabItem(0, "家居", $r("app.media.icon_tab_home")))
-          TabContent() {DeviceCardTestPage();}
+          TabContent() {AIQaPage();}
           .tabBar(this.createTabItem(1, "AI", $r("app.media.icon_tab_ai")))
           TabContent() {ProfilePage();}
           .tabBar(this.createTabItem(2, "我的", $r("app.media.icon_tab_profile")))
@@ -36,6 +37,7 @@ struct Index {
         .barPosition(BarPosition.End)
         .scrollable(false)
         .layoutWeight(1)
+        .expandSafeArea([SafeAreaType.KEYBOARD])
         .onTabBarClick((index)=>{
           this.currentTab = index
         })
@@ -51,6 +53,7 @@ struct Index {
     .width('100%')
     .height('100%')
     .backgroundColor(ColorConstants.NAVIGATION_BG_COLOR)
+    .expandSafeArea([SafeAreaType.KEYBOARD])
   }
 
   @Builder

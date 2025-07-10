@@ -18,6 +18,7 @@ export type MessageCallback = (err: Error | null, message: MqttMessage) => void;
 export default class MQTTUtil {
   private static instance: MQTTUtil;                  // 单例实例
   private mqttAsyncClient: MqttClient | null = null;
+  private isConnected: boolean = false;
 
   private constructor() {}
 
@@ -71,7 +72,11 @@ export default class MQTTUtil {
     }
 
     console.log('MQTT连接并订阅成功');
+    this.isConnected = true;
     return true;
+  }
+  isMqttConnected(): boolean {
+    return this.isConnected;
   }
 
   /**

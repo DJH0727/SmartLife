@@ -9,6 +9,11 @@ import { DEVICES_JSON_KEY, DEVICE_UPDATE_EVENT, LOCAL_DEVICE_NAME } from "../com
 import MQTTUtil from "../common/utils/MQTTUtil";
 import { MqttMessageDispatcher } from "../common/utils/MqttMessageDispatcher";
 
+interface BoundResult{
+  result:number,
+  message:string
+}
+
 
 export class HomePageViewModel {
   private static viewModel: HomePageViewModel;
@@ -16,7 +21,7 @@ export class HomePageViewModel {
   deviceCount: number;
   private preferenceDevices: preferences.Preferences | undefined;
   MqttUtil:MQTTUtil=MQTTUtil.getInstance();
-  private dispatcher:MqttMessageDispatcher = MqttMessageDispatcher.getInstance();
+  dispatcher:MqttMessageDispatcher = MqttMessageDispatcher.getInstance();
 
   constructor() {
     this.devicesDS = new DeviceDataSource([]);
@@ -43,19 +48,27 @@ export class HomePageViewModel {
     this.saveDevices();
   }
 
-  addDeviceTest(){
-    const rd = Math.floor(Math.random() * 1000)
-    const device = new AirConditionerDevice('dev'+rd, '测试设备'+rd, true, true);
-    this.devicesDS.addDevice(device);
+  addDeviceTest(type: DeviceEnum){
+    if(type===DeviceEnum.HUMIDIFIER){
+      const  device = new DeviceBase('dev1001', type, "海尔加湿器", true);
+      this.devicesDS.addDevice(device);
+    }
+    if(type===DeviceEnum.SPEAKER){
+      const  device = new DeviceBase('dev102', type, "漫步者 R201T", true);
+      this.devicesDS.addDevice(device);
+    }
+
+
     this.deviceCount = this.devicesDS.totalCount();
     this.saveDevices();
-    emitter.emit(DEVICE_UPDATE_EVENT );
+    emitter.emit(DEVICE_UPDATE_EVENT);
   }
 
 
   // 在类成员声明一个变量，存储超时定时器和取消标志
   private bindTimeout: number | null = null;
   private isBindCancelled = false;
+
 
   async boundDevice(id: string): Promise<boolean> {
     const requestTopic = `/devices/${id}/bound/request`;
@@ -70,10 +83,12 @@ export class HomePageViewModel {
       const handler = (message: string) => {
         if (this.isBindCancelled) return; // 已取消则不处理
         console.info("收到绑定响应：" + message);
+        const resultCode = (JSON.parse(message) as BoundResult).result;
+        const resultBoolean:boolean = (resultCode===0)?true:false
         if (this.bindTimeout) clearTimeout(this.bindTimeout);
         this.MqttUtil.unsubscribe(responseTopic);
         this.dispatcher.unregisterHandler(responseTopic);
-        resolve(true);
+        resolve(resultBoolean);
       };
 
       await this.MqttUtil.subscribe(responseTopic, 0);
@@ -149,27 +164,41 @@ export class HomePageViewModel {
     const parsed: DeviceBase[] = JSON.parse(stored);
     const devices: DeviceBase[] = [];
     for (let i = 0; i < parsed.length; i++) {
-      const type = getDeviceType(parsed[i].type)
-      switch (type) {
-        case DeviceEnum.AIR_CONDITIONER:
-          const raw = parsed[i] as DeviceBase;
-          devices.push(new DeviceBase(
-            raw.id,
-            raw.type,
-            raw.name,
-            raw.isBind,
-            raw.isPowerOn,
-            raw.online,
-            raw.lastUpdate
-          ));
-          break;
-          //TODO: 可能有拓展
-
-      }
+      const raw = parsed[i] as DeviceBase;
+      devices.push(new DeviceBase(
+        raw.id,
+        raw.type,
+        raw.name,
+        raw.isBind,
+        raw.isPowerOn,
+        raw.online,
+        raw.lastUpdate
+      ));
     }
     return devices;
 
   }
+
+
+
+  sendSetRequest(id: string, payload: string):boolean {
+    const topic = `/devices/${id}/set`;
+    const mqttUtil = HomePageViewModel.getInstance().MqttUtil;
+
+    if (!mqttUtil.isMqttConnected()) {
+      console.warn('MQTT未连接，无法发送命令');
+      return false;
+    }
+
+    mqttUtil.publish(topic, payload);
+    return true;
+  }
+
+
+
+
+
+
 
 }
 

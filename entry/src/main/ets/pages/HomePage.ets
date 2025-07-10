@@ -29,6 +29,9 @@ export struct HomePage {
       }
     );
   }
+  aboutToDisappear(): void {
+    this.viewModel.saveDevices()
+  }
 
   build() {
     Column() {
@@ -95,9 +98,14 @@ export struct HomePage {
           console.log("添加设备")
         })
 
-      MenuItem({ content: " Test" })
+      MenuItem({ content: "测试加湿器" })
         .onClick(() => {
-          this.viewModel.addDeviceTest();
+          this.viewModel.addDeviceTest(DeviceEnum.HUMIDIFIER);
+
+        })
+      MenuItem({ content: "测试音响" })
+        .onClick(() => {
+          this.viewModel.addDeviceTest(DeviceEnum.SPEAKER);
 
         })
     }

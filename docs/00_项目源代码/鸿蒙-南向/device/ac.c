@@ -24,7 +24,8 @@
 #define UNBOUND_REQUEST_TOPIC "/devices/unbound/request"
 #define UNBOUND_RESPONSE_TOPIC "/devices/unbound/response"
 #define UNBOUND_RESPONSE_PAYLOAD "{\"id\":\"dev101\",\"type\":\"air_conditioner\",\"name\":\"Gree Air Conditioner\",\"isBind\":0}"
-#define UNBOUND_RESPONSE_PAYLOAD_TEST "{\"id\":\"dev103\",\"type\":\"humidifier\",\"name\":\"Gree Humidifier\",\"isBind\":0}"
+#define UNBOUND_RESPONSE_PAYLOAD_HUM "{\"id\":\"dev103\",\"type\":\"humidifier\",\"name\":\"Gree Humidifier\",\"isBind\":0}"
+#define UNBOUND_RESPONSE_PAYLOAD_LIGHT "{\"id\":\"dev104\",\"type\":\"light\",\"name\":\"Smart Light\",\"isBind\":0}"
 
 #define BOUND_REQUEST_TOPIC "/devices/dev101/bound/request"
 #define BOUND_RESPONSE_TOPIC "/devices/dev101/bound/response"
@@ -121,7 +122,9 @@ static void mqtt_response_task_run(void *arg)
         if(UNBOUND_STATE){
             mqtt_publish(UNBOUND_RESPONSE_TOPIC, UNBOUND_RESPONSE_PAYLOAD, 0);
             sleep(1);
-            mqtt_publish(UNBOUND_REQUEST_TOPIC, UNBOUND_RESPONSE_PAYLOAD_TEST, 0);
+            mqtt_publish(UNBOUND_RESPONSE_TOPIC, UNBOUND_RESPONSE_PAYLOAD_LIGHT, 0);
+            sleep(1);
+            mqtt_publish(UNBOUND_RESPONSE_TOPIC, UNBOUND_RESPONSE_PAYLOAD_HUM, 0);
             UNBOUND_STATE=0;
         }
         if(BOUND_STATE){

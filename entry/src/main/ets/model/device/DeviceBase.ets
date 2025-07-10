@@ -23,11 +23,13 @@ export class DeviceBase {
     switch (this.type) {
       //TODO: 拓展
       case DeviceEnum.AIR_CONDITIONER:
-        return "app.media.img_device_test";
+        return "app.media.img_device_ac";
       case DeviceEnum.HUMIDIFIER:
-        return "app.media.img_device_test";
+        return "app.media.img_device_humi";
       case DeviceEnum.GAS_DETECTOR:
         return "app.media.img_device_test";
+      case DeviceEnum.SPEAKER:
+        return "app.media.img_device_speaker";
       default:
         return "app.media.img_device_test";
     }

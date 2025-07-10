@@ -216,6 +216,7 @@ export struct UnboundDeviceCard {
       .onClick(() => {
         // 更新设备名称
         this.device.name = this.newName;
+        this.device.setOnline(true);
         const viewModel: HomePageViewModel = HomePageViewModel.getInstance();
         viewModel.addDevice(this.device);
         // 关闭弹窗
